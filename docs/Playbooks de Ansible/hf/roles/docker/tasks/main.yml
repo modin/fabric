@@ -1,0 +1,27 @@
+- name: "Instalo dnf-plugins-core"
+  environment: "{{ proxy_env }}"
+  dnf: name="dnf-plugins-core" state=present 
+  register: first_time
+
+- name: "Instalo Docker Repo"
+  environment: "{{ proxy_env }}"
+  command: "dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo"
+  when: first_time.changed
+
+- name: "Instalo Docker"
+  environment: "{{ proxy_env }}"
+  dnf: name="docker-ce" state=present
+
+- name: "Instalo Docker Compose"
+  environment: "{{ proxy_env }}"
+  command: "curl -L https://github.com/docker/compose/releases/download/1.16.1/docker-compose-Linux-x86_64 -o /usr/local/bin/docker-compose"
+  when: first_time.changed
+
+- name: "Configuro Docker Compose"
+  environment: "{{ proxy_env }}"
+  command: "chmod +x /usr/local/bin/docker-compose"
+  when: first_time.changed
+  
+#    name: docker-ce
+#    enablerepo: "https://download.docker.com/linux/fedora/docker-ce.repo"
+#    state: present

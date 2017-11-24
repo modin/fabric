@@ -1,0 +1,41 @@
+[fedora@blockchain-5d62f16f-5a6c-4640-9bc5-1147b4870cb5 first-network]$ ./byfn.sh -m generate
+Generating certs and genesis block for with channel 'mychannel' and CLI timeout of '10000' seconds and CLI delay of '3' seconds
+Continue (y/n)? y
+proceeding ...
+/home/fedora/bin/cryptogen
+
+##########################################################
+##### Generate certificates using cryptogen tool #########
+##########################################################
+org1.example.com
+org2.example.com
+
+/home/fedora/bin/configtxgen
+##########################################################
+#########  Generating Orderer Genesis block ##############
+##########################################################
+2017-11-15 12:22:46.441 UTC [common/tools/configtxgen] main -> INFO 001 Loading configuration
+2017-11-15 12:22:46.456 UTC [common/tools/configtxgen] doOutputBlock -> INFO 002 Generating genesis block
+2017-11-15 12:22:46.457 UTC [common/tools/configtxgen] doOutputBlock -> INFO 003 Writing genesis block
+
+#################################################################
+### Generating channel configuration transaction 'channel.tx' ###
+#################################################################
+2017-11-15 12:22:46.511 UTC [common/tools/configtxgen] main -> INFO 001 Loading configuration
+2017-11-15 12:22:46.524 UTC [common/tools/configtxgen] doOutputChannelCreateTx -> INFO 002 Generating new channel configtx
+2017-11-15 12:22:46.525 UTC [common/tools/configtxgen] doOutputChannelCreateTx -> INFO 003 Writing new channel tx
+
+#################################################################
+#######    Generating anchor peer update for Org1MSP   ##########
+#################################################################
+2017-11-15 12:22:46.579 UTC [common/tools/configtxgen] main -> INFO 001 Loading configuration
+2017-11-15 12:22:46.592 UTC [common/tools/configtxgen] doOutputAnchorPeersUpdate -> INFO 002 Generating anchor peer update
+2017-11-15 12:22:46.592 UTC [common/tools/configtxgen] doOutputAnchorPeersUpdate -> INFO 003 Writing anchor peer update
+
+#################################################################
+#######    Generating anchor peer update for Org2MSP   ##########
+#################################################################
+2017-11-15 12:22:46.650 UTC [common/tools/configtxgen] main -> INFO 001 Loading configuration
+2017-11-15 12:22:46.664 UTC [common/tools/configtxgen] doOutputAnchorPeersUpdate -> INFO 002 Generating anchor peer update
+2017-11-15 12:22:46.665 UTC [common/tools/configtxgen] doOutputAnchorPeersUpdate -> INFO 003 Writing anchor peer update
+

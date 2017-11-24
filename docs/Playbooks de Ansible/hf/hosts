@@ -1,0 +1,14 @@
+[todos]
+nodo1
+nodo2
+nodo3
+#192.168.0.109
+#192.168.0.110
+#192.168.0.111
+
+[rootCA]
+nodo1
+
+
+[FabricCA]
+nodo2

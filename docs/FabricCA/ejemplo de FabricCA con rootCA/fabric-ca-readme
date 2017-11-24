@@ -1,0 +1,100 @@
+openssl ec -out private/ca-ec.key.pem 
+4096-prime256v1
+
+openssl ecparam -name prime256v1 -genkey -out intermediate/private/intermediate-ec.key.pem
+genrsa -aes256 \
+      -out intermediate/private/intermediate.key.pem 4096
+
+openssl req -config intermediate/openssl.cnf -new -sha256 -key intermediate/private/intermediate-ec.key.pem -out intermediate/csr/intermediate-ec.csr.pem
+
+openssl ca -config openssl.cnf -extensions v3_intermediate_ca \
+      -days 3650 -notext -md sha256 \
+      -in intermediate/csr/intermediate-ec.csr.pem \
+      -out intermediate/certs/intermediate-ec.cert.pem \
+      -policy policy_loose
+
+
+openssl ecparam -name prime256v1 -genkey -out private/ca-ec.key.pem
+openssl req -config openssl.cnf -key private/ca-ec.key.pem -new -x509 -days 7300 -sha256 -extensions v3_ca -out certs/ca-ec.cert.pem
+
+openssl ecparam -name prime256v1 -genkey -out intermediate/private/intermediate-ec.key.pem
+openssl req -config intermediate/openssl.cnf -new -sha256 -key intermediate/private/intermediate-ec.key.pem -out intermediate/csr/intermediate-ec.csr.pem
+openssl ca -config openssl.cnf -extensions v3_intermediate_ca -days 3650 -notext -md sha256 -in intermediate/csr/intermediate-ec.csr.pem -out intermediate/certs/intermediate-ec.cert.pem -policy policy_loose
+
+ecsdsa s256
+
+Failed parsing EC private key: x509: failed to parse EC private key: asn1: structure error: tags don't match (16 vs {class:0 tag:6 length:8 isCompound:false}) {optional:false explicit:false application:false defaultValue:<nil> tag:<nil> stringType:0 timeType:0 set:false omitEmpty:false} ecPrivateKey @2
+
+openssl x509 -noout -text -in ca-cert.pem
+
+Estimados!
+
+TL;DR tenemos un Fabric CA que puede enrolar identidades, con certificado del Fabric CA emitido por CA independiente (no autofirmados). Primer paso para enrollment cumplido!
+
+Roldán! Gracias por el pique de cuales algoritmos criptográficos estaban soportados! Gracias a eso pude levantar el fabric ca con un certificado intermedio (CN=bob.com) firmado por 'mi' CA (CN=alice.com), que equivaldría al correo. 
+
+openssl ecparam -name prime256v1 -genkey -out key.pem (esto genera una clave con ECDSA y firma con SHA256).
+
+Luego, hice un enrollment, o sea, agregué una identidad con el comando:
+
+fabric-ca-client enroll -u http://admin:adminpw@localhost:7054
+
+La prueba: el certificado que generó Fabric CA usa como firmante.
+
+$ openssl x509 -noout -text -in signcerts/cert.pem
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            7e:7b:64:0d:31:6b:c8:18:03:86:ab:fd:e9:e9:22:c4:95:7d:a1:8f
+    Signature Algorithm: ecdsa-with-SHA256
+        Issuer: C=UY, ST=Montevideo, O=Bob Ltd, CN=bob.com/emailAddress=modin@bob.com
+        Validity
+            Not Before: Nov  4 22:21:00 2017 GMT
+            Not After : Nov  4 22:21:00 2018 GMT
+        Subject: C=US, ST=North Carolina, O=Hyperledger, OU=Fabric, CN=admin
+        Subject Public Key Info:
+            Public Key Algorithm: id-ecPublicKey
+                Public-Key: (256 bit)
+                pub:
+                    04:16:33:ea:35:33:80:71:d4:28:1f:43:b1:b9:58:
+                    e2:c4:fd:22:96:6c:41:54:72:9b:b0:6b:cd:17:80:
+                    90:3b:01:d3:b4:75:6c:0f:da:f5:30:e5:0b:85:7d:
+                    ca:e7:26:d6:2d:cb:39:d6:f2:02:0b:21:40:ca:00:
+                    d7:00:15:8d:f3
+                ASN1 OID: prime256v1
+                NIST CURVE: P-256
+        X509v3 extensions:
+            X509v3 Key Usage: critical
+                Digital Signature
+            X509v3 Basic Constraints: critical
+                CA:FALSE
+            X509v3 Subject Key Identifier:
+                1C:67:27:EC:1D:00:65:CD:69:40:0A:5F:4A:AF:FE:39:3E:5E:8A:FC
+            X509v3 Authority Key Identifier:
+                keyid:5E:0D:85:0F:14:00:F3:E1:81:4E:48:79:AB:39:40:C7:54:6E:CA:06
+
+            X509v3 Subject Alternative Name:
+                DNS:3a673e1f2313
+    Signature Algorithm: ecdsa-with-SHA256
+         30:45:02:21:00:94:d3:af:36:6c:6e:f3:7f:14:ce:3c:41:2a:
+         17:70:f4:58:cf:8f:eb:12:ce:c8:38:6c:b9:66:d5:7a:e3:5e:
+         23:02:20:65:f4:02:90:88:96:d8:fc:f2:c3:bb:b1:a9:6c:ce:
+         d4:8e:2b:33:e0:e1:1f:c4:f7:dd:49:f4:bf:64:97:e4:6e
+
+Saludos,
+Marcelo
+
+
+root@3a673e1f2313:~# fabric-ca-client enroll -u http://admin:adminpw@localhost:7054
+2017/11/04 22:26:05 [INFO] User provided config file: /etc/hyperledger/fabric-ca-server/fabric-ca-client-config.yaml
+2017/11/04 22:26:05 [INFO] Created a default configuration file at /etc/hyperledger/fabric-ca-server/fabric-ca-client-config.yaml
+2017/11/04 22:26:05 [INFO] generating key: &{A:ecdsa S:256}
+2017/11/04 22:26:05 [INFO] encoded CSR
+2017/11/04 22:26:06 [INFO] Stored client certificate at /etc/hyperledger/fabric-ca-server/msp/signcerts/cert.pem
+2017/11/04 22:26:06 [INFO] Stored CA root certificate at /etc/hyperledger/fabric-ca-server/msp/cacerts/localhost-7054.pem
+2017/11/04 22:26:06 [INFO] Stored CA intermediate certificates at /etc/hyperledger/fabric-ca-server/msp/intermediatecerts/localhost-7054.pem
+
+2017/11/04 22:26:06 [INFO] signed certificate with serial number 722084544501178798638461707666711906019176194447
+2017/11/04 22:26:06 [INFO] 127.0.0.1:36406 - "POST /enroll" 200
+
