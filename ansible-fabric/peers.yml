@@ -1,0 +1,6 @@
+---
+- hosts: peers
+  user: fedora
+  become: yes
+  roles:
+    - peer

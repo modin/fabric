@@ -1,0 +1,11 @@
+CA_root: "/home/fedora/FabricCA"
+CA_owner: fedora
+CA_group: fedora
+CA_name: FabricCA
+CA_Country: UY
+CA_State: Montevideo
+CA_Locality: Montevideo
+CA_OrganizationName: PowerLedgers_FabricCA
+CA_org: "{{ CA_OrganizationName }}"
+CA_CN: powerledgers.org
+rootCA: false

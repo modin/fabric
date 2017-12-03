@@ -1,0 +1,41 @@
+- name: 'Instalo supervisord para tener siempre levantado el peer'
+  environment: "{{ proxy_env }}"
+  dnf: 
+    name: supervisor
+    state: present 
+
+- name: 'Instalo el software del peer'
+  environment: "{{ proxy_env }}"
+  copy:
+    src: peer
+    dest: /usr/local/bin/peer
+    mode: 0550
+
+#- name: 'Instalo credenciales en el peer'
+
+- name: 'Agrego directorios para configuracion'
+  file: 
+   path: "{{ item }}"
+   owner: fedora
+   group: fedora
+   mode: 0644
+   state: directory
+  with_items:
+   "{{ etc_hyperledger }}"
+ 
+- name: 'Instalo configuracion del peer'
+  template:
+    src: core.j2
+    dest: /etc/hyperledger/fabric/core.yaml
+   
+
+- name: 'Configuro el peer en supervisord'
+  environment: "{{ proxy_env }}"
+  template:
+    src: peer.j2
+    dest: /etc/supervisord.d/peer.ini
+
+- name: 'Levanto el servicio de supervisord, que levanta el peer'
+  service:
+    name: supervisord
+    state: restarted

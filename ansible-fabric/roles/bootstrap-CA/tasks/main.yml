@@ -1,0 +1,33 @@
+- name: Archivos de indice de certificados y de numero de serie
+  copy: 
+   src: "{{ item }}"
+   dest: "{{ CA_root }}/ca/"
+   owner: "{{ CA_owner }}"
+   group: "{{ CA_group }}"
+   backup: yes
+  with_items:
+   - index.txt
+   - serial
+  register: first_time
+
+- name: Creo clave primaria
+  command: "openssl ecparam -name prime256v1 -genkey -out {{ CA_root }}/ca/private/{{ CA_name }}.key.pem creates={{ CA_root }}/ca/private/{{ CA_name }}.key.pem"
+
+- name: Configuro openssl
+  template:
+    src: openssl.j2
+    dest: "{{ CA_root }}/ca/openssl.cnf"
+
+- name: Creo certificado autofirmado si es Root CA
+  command: 'openssl req -config {{ CA_root}}/ca/openssl.cnf -key {{ CA_root }}/ca/private/{{CA_name}}.key.pem -new -x509 -subj "/C={{ CA_Country}}/ST={{CA_State}}/L={{ CA_Locality }}/O={{ CA_org }}/CN={{ CA_CN }}" -days 7300 -sha256 -extensions v3_ca -out {{ CA_root }}/ca/certs/{{CA_name}}.cert.pem creates={{ CA_root }}/ca/certs/{{CA_name}}.cert.pem'
+  when: rootCA 
+
+- name: Creo certificate request si no es Root CA
+  command: 'openssl req -config {{ CA_root}}/ca/openssl.cnf -new -sha256 -key {{ CA_root }}/ca/private/{{CA_name}}.key.pem -subj "/C={{ CA_Country}}/ST={{CA_State}}/L={{ CA_Locality }}/O={{ CA_org }}/CN={{ CA_CN }}" -out {{ CA_root }}/ca/csr/{{CA_name}}.csr.pem creates={{ CA_root }}/ca/csr/{{CA_name}}.csr.pem'
+  when: rootCA == false
+
+# CSR debe enviarse a root CA para ser firmado
+# CA debe firmarlo
+# Certificado debe instalar en FabricCA
+
+# openssl ca -config openssl.cnf -extensions v3_intermediate_ca -days 3650 -notext -md sha256 -in intermediate/csr/intermediate-ec.csr.pem -out intermediate/certs/intermediate-ec.cert.pem -policy policy_loose
