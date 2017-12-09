@@ -12,7 +12,7 @@ ca.example.com
 [FabricCA]
 ca.example.com 
 
-[orderer]
+[orderers]
 orderer.example.com
 
 [peers]
@@ -21,11 +21,3 @@ peer1.org1.example.com
 peer0.org2.example.com
 peer1.org2.example.com
 
-
-[peer:org1]
-peer0.org1.example.com
-peer1.org1.example.com
-
-[peer:org2]
-peer0.org2.example.com
-peer1.org2.example.com

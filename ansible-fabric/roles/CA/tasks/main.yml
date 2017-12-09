@@ -1,7 +1,7 @@
 - name: Instalo OpenSSL como dependencia
   environment: "{{ proxy_env }}"
   become: yes
-  dnf:
+  yum:
    name: openssl
    state: present
 

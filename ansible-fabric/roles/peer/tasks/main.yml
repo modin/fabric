@@ -1,8 +1,14 @@
-- name: 'Instalo supervisord para tener siempre levantado el peer'
+- name: Add repository
   environment: "{{ proxy_env }}"
-  dnf: 
+  yum:
+    name: epel-release
+
+- name: 'Instalo supervisord para tener siempre levantado el orderer'
+  environment: "{{ proxy_env }}"
+  yum:
     name: supervisor
-    state: present 
+    state: present
+    update_cache: yes
 
 - name: 'Instalo el software del peer'
   environment: "{{ proxy_env }}"
@@ -16,8 +22,8 @@
 - name: 'Agrego directorios para configuracion'
   file: 
    path: "{{ item }}"
-   owner: fedora
-   group: fedora
+   owner: centos
+   group: centos
    mode: 0644
    state: directory
   with_items:

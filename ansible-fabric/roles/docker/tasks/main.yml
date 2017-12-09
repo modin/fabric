@@ -1,15 +1,28 @@
-- name: "Instalo dnf-plugins-core"
-  environment: "{{ proxy_env }}"
-  dnf: name="dnf-plugins-core" state=present 
+#- name: "Instalo dnf-plugins-core"
+#  environment: "{{ proxy_env }}"
+#  yum:
+#    name: "{{ item }}"
+#  with_items: 
+#    - yum-utils
+#    - device-mapper-persistent-data
+#    - lvm2
+
 
 - name: "Instalo Docker Repo"
   environment: "{{ proxy_env }}"
-  command: "dnf config-manager --add-repo https://download.docker.com/linux/fedora/docker-ce.repo"
+  yum_repository:
+   name: docker-repo
+   description: docker-repo
+   description: Docker CE Stable - $basearch
+   baseurl: https://download.docker.com/linux/centos/7/$basearch/stable
+   enabled: 1
+   gpgcheck: 1
+   gpgkey: https://download.docker.com/linux/centos/gpg
   register: first_time
 
 - name: "Instalo Docker"
   environment: "{{ proxy_env }}"
-  dnf: name="docker-ce" state=present
+  yum: name="docker-ce-17.06.1.ce" state=present update_cache=yes
 
 - name: "Instalo Docker Compose"
   environment: "{{ proxy_env }}"
@@ -21,6 +34,3 @@
   command: "chmod +x /usr/local/bin/docker-compose"
   when: first_time.changed
   
-#    name: docker-ce
-#    enablerepo: "https://download.docker.com/linux/fedora/docker-ce.repo"
-#    state: present

@@ -1,0 +1,37 @@
+etc_hyperledger:
+   - '/etc/hyperledger/fabric'
+   - '/etc/hyperledger/configtx'
+   - '/etc/hyperledger/msp'
+   - '/etc/hyperledger/msp/orderer'
+   - '/etc/hyperledger/fabric/msp'
+#   - '/etc/hyperledger/msp/orderer/admincerts'
+#   - '/etc/hyperledger/msp/orderer/cacerts'
+#   - '/etc/hyperledger/msp/orderer/intermediatecerts'
+#   - '/etc/hyperledger/msp/orderer/crls'
+#   - '/etc/hyperledger/msp/orderer/keystore'
+#   - '/etc/hyperledger/msp/orderer/signcerts'
+#   - '/etc/hyperledger/msp/orderer/tlscacerts'
+#   - '/etc/hyperledger/msp/orderer/tlsintermediatecerts'
+#   - '/etc/hyperledger/fabric/msp'
+#   - '/etc/hyperledger/fabric/msp/admincerts'
+#   - '/etc/hyperledger/fabric/msp/cacerts'
+#   - '/etc/hyperledger/fabric/msp/intermediatecerts'
+#   - '/etc/hyperledger/fabric/msp/crls'
+#   - '/etc/hyperledger/fabric/msp/keystore'
+#   - '/etc/hyperledger/fabric/msp/signcerts'
+#   - '/etc/hyperledger/fabric/msp/tlscacerts'
+#   - '/etc/hyperledger/fabric/msp/tlsintermediatecerts'
+
+user: root
+#   http://hyperledger-fabric.readthedocs.io/en/release/msp.html
+# 
+#    a folder admincerts to include PEM files each corresponding to an administrator certificate
+#    a folder cacerts to include PEM files each corresponding to a root CA’s certificate
+#    (optional) a folder intermediatecerts to include PEM files each corresponding to an intermediate CA’s certificate
+#    (optional) a file config.yaml to include information on the considered OUs; the latter are defined as pairs of <Certificate, OrganizationalUnitIdentifier> entries of a yaml array called OrganizationalUnitIdentifiers, where Certificate represents the relative path to the certificate of the certificate authority (root or intermediate) that should be considered for certifying members of this organizational unit (e.g. ./cacerts/cacert.pem), and OrganizationalUnitIdentifier represents the actual string as expected to appear in X.509 certificate OU-field (e.g. “COP”)
+#    (optional) a folder crls to include the considered CRLs
+#    a folder keystore to include a PEM file with the node’s signing key; we emphasise that currently RSA keys are not supported
+#    a folder signcerts to include a PEM file with the node’s X.509 certificate
+#    (optional) a folder tlscacerts to include PEM files each corresponding to a TLS root CA’s certificate
+#    (optional) a folder tlsintermediatecerts to include PEM files each corresponding to an intermediate TLS CA’s certificate
+

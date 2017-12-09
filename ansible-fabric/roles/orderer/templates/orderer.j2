@@ -1,0 +1,22 @@
+[program:orderer]
+directory=/usr/local/bin ; cwd for program
+command=/usr/local/bin/orderer
+
+; Log file handling
+stdout_logfile=/var/log/%(program_name)s.log
+stderr_logfile=/var/log/%(program_name)s-stderr.log
+stdout_logfile_backups=10
+stderr_logfile_backups=10
+user={{ user }} ; user to run hubot as
+startsecs=10
+autorestart=true
+
+; Add any environment vars needed below
+environment =
+  ORDERER_GENERAL_LOCALMSPDIR=/etc/hyperledger/msp/orderer/msp, 
+  ORDERER_GENERAL_GENESISFILE=/etc/hyperledger/configtx/genesis.block,
+  ORDERER_GENERAL_LOCALMSPID=OrdererMSP,
+  ORDERER_GENERAL_LISTENADDRESS=0.0.0.0,
+  ORDERER_GENERAL_LOGLEVEL=debug,
+  ORDERER_GENERAL_GENESISMETHOD=file,
+  FABRIC_CFG_PATH=/etc/hyperledger/fabric

@@ -1,0 +1,6 @@
+---
+- hosts: orderers
+  user: centos
+  become: yes
+  roles:
+    - orderer

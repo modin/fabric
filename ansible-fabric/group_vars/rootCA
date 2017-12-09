@@ -1,6 +1,6 @@
-CA_root: "/home/fedora/rootCA"
-CA_owner: fedora
-CA_group: fedora
+CA_root: "/home/centos/rootCA"
+CA_owner: centos
+CA_group: centos
 CA_name: rootCA
 CA_Country: UY
 CA_State: Montevideo

@@ -1,0 +1,90 @@
+#- name: 'Instalo supervisord para tener siempre levantado el orderer'
+#  environment: "{{ proxy_env }}"
+#  yum: 
+#    name: supervisor
+#    state: present 
+#- name: 'Instalo supervisord para tener siempre levantado el peer (parte 1)'
+#  environment: "{{ proxy_env }}"
+#  yum:
+#    name: python-setuptools
+#    state: present
+
+#- name: 'Instaldo supervisord (parte 2)'
+#  environment: "{{ proxy_env }}"
+#  easy_install:
+#    name: supervisor
+#    state: present
+
+- name: Add repository
+  environment: "{{ proxy_env }}"
+  yum:
+    name: epel-release
+
+- name: 'Instalo supervisord para tener siempre levantado el orderer'
+  environment: "{{ proxy_env }}"
+  yum:
+    name: supervisor
+    state: present
+    update_cache: yes
+
+- name: 'Instalo el software del orderer'
+  environment: "{{ proxy_env }}"
+  copy:
+    src: orderer
+    dest: /usr/local/bin/orderer
+    owner: centos
+    group: centos
+    mode: 0550
+
+- name: 'Agrego directorios para configuracion'
+  file: 
+   path: "{{ item }}"
+   owner: centos
+   group: centos
+   mode: 0644
+   state: directory
+  with_items:
+   "{{ etc_hyperledger }}"
+
+- name: 'Instalo MSP credenciales en el orderer'
+  copy:
+   src: msp
+   dest: /etc/hyperledger/msp/orderer/
+   owner: centos
+   group: centos
+
+- name: 'Instalo genesis block'
+  copy:
+   src: genesis.block
+   dest: /etc/hyperledger/configtx/genesis.block
+   owner: centos
+   group: centos
+
+- name: 'Instalo configuracion del orderer'
+  template:
+    src: orderer.yaml.j2
+    dest: /etc/hyperledger/fabric/orderer.yaml
+    owner: centos
+    group: centos
+
+
+- name: 'Instalo reglas de OU permitidas via config.yaml en msp'
+  template:
+    src: config.yaml.j2
+    dest: /etc/hyperledger/fabric/msp/config.yaml  
+    owner: centos
+    group: centos
+
+
+- name: 'Configuro el peer en supervisord'
+  environment: "{{ proxy_env }}"
+  template:
+    src: orderer.j2
+    dest: /etc/supervisord.d/orderer.ini
+    owner: centos
+    group: centos
+
+- name: 'Levanto el servicio de supervisord, que levanta el orderer'
+  service:
+    name: supervisord
+    state: restarted

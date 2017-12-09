@@ -1,0 +1,6 @@
+---
+- hosts: peers
+  user: centos
+  become: yes
+  roles:
+    - peer

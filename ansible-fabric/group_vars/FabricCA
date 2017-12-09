@@ -1,6 +1,6 @@
-CA_root: "/home/fedora/FabricCA"
-CA_owner: fedora
-CA_group: fedora
+CA_root: "/home/centos/FabricCA"
+CA_owner: centos
+CA_group: centos
 CA_name: FabricCA
 CA_Country: UY
 CA_State: Montevideo

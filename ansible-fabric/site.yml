@@ -1,26 +1,32 @@
 ---
 - hosts: todos
-  user: fedora
+  user: centos
   become: yes
   roles:
    - docker
 
 - hosts: rootCA
-  user: fedora
+  user: centos
   #become: yes
   roles:
    - CA
    - bootstrap-CA 
 
 - hosts: FabricCA
-  #user: fedora
+  user: centos
   become: yes
   roles:
     - CA
     - bootstrap-CA
 
 - hosts: peers
-  user: fedora
+  user: centos
   become: yes
   roles:
     - peer
+
+- hosts: orderers
+  user: centos
+  become: yes
+  roles:
+   - orderer
